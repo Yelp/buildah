@@ -497,10 +497,11 @@ func GetCacheMount(args []string) (specs.Mount, error) {
 	// since type is cache and cache can be resused by consecutive builds
 	// create a common cache directory, which should persists on hosts within temp lifecycle
 	// add subdirectory if specified
+	sourceParent := filepath.Join(GetTempDir(), BuildahCacheDir+"-"+strconv.Itoa(unshare.GetRootlessUID()))
 	if id != "" {
-		newMount.Source = filepath.Join(GetTempDir(), BuildahCacheDir, id)
+		newMount.Source = filepath.Join(sourceParent, id)
 	} else {
-		newMount.Source = filepath.Join(GetTempDir(), BuildahCacheDir)
+		newMount.Source = sourceParent
 	}
 	// create cache on host if not present
 	err = os.MkdirAll(newMount.Source, os.FileMode(mode))
